@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Auth Server</title>
+    <script type="text/javascript">
+    const loginUser = async (e) => {
+    e.preventDefault();
+    var formData = new FormData(document.querySelector('form'));
+
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({login: formData.get('username'), password: formData.get('password')})
+        });
+      const status = response.status;
+      if(status != 200) {
+       alert('Something wrong happened, try again');
+      } else {
+        const json = await response.json();
+        console.log(json);
+         var url = new URL(window.location.href);
+         var redirect = url.searchParams.get('redirect');
+         window.location.replace(redirect + '?code=' + json.code);
+      }
+
+
+    }
+  </script>
+</head>
+<body>
+
+<form >
+    <div><label> User Name : <input type="text" name="username"/> </label></div>
+    <div><label> Password: <input type="password" name="password"/> </label></div>
+    <div><input type="submit" value="Sign In" onclick="loginUser(event)"/></div>
+</form>
+</body>
+</html>
